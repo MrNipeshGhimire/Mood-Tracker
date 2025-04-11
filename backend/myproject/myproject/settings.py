@@ -13,6 +13,9 @@ https://docs.djangoproject.com/en/5.1/ref/settings/
 # pymysql.install_as_MySQLdb()
 from pathlib import Path
 import os
+from dotenv import load_dotenv
+
+load_dotenv() 
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -170,6 +173,3 @@ DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
 
 
 
-OPENAI_API_KEY = "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"
-
-OPENAI_API_KEY = os.getenv("OPENAI_API_KEY", "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")

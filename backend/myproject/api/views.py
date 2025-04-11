@@ -44,7 +44,6 @@ from dotenv import load_dotenv
 load_dotenv()
 
 openai.api_key = os.getenv("OPENAI_API_KEY")
-# openai.api_key = "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"
 
 # Generate JWT tokens
 def get_tokens_for_user(user):
@@ -76,7 +75,7 @@ def login_user(request):
     user = authenticate(username=username, password=password)
     if user:
         login(request, user)   #session generate garxa
-        print(request.user)
+        print(request.user)   
         tokens = get_tokens_for_user(user)
         return Response({'tokens': tokens, 'user': UserSerializer(user).data}, status=status.HTTP_200_OK)
     return Response({'error': 'Invalid credentials'}, status=status.HTTP_401_UNAUTHORIZED)
