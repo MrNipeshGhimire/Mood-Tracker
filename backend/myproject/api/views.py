@@ -38,12 +38,26 @@ from django.middleware.csrf import get_token
 from django.core.mail import send_mail
 from rest_framework.views import APIView
 import random
+from openai import OpenAI
 
 from dotenv import load_dotenv
 
 load_dotenv()
 
 openai.api_key = os.getenv("OPENAI_API_KEY")
+
+
+client = OpenAI(
+    base_url="https://openrouter.ai/api/v1",
+    api_key=os.getenv("OPENROUTER_API_KEY"),
+    default_headers={
+        "HTTP-Referer": "http://localhost:3000", 
+        "X-Title": "Mood-Tracker", 
+    },
+)
+
+
+
 
 # Generate JWT tokens
 def get_tokens_for_user(user):
@@ -869,6 +883,10 @@ class ResetPasswordView(APIView):
     
     
 
+
+
+
+
 #==========Chat with AI====================================#
 
 
@@ -902,19 +920,85 @@ def chat_with_ai(request, user_id):
         ]
         return Response({'chats': chat_data}, status=status.HTTP_200_OK)
 
+
+
+# def get_openai_response(user_input):
+#     try:
+#         response = client.chat.completions.create(
+#             model="google/gemma-3-4b-it:free",
+#             messages=[
+#                 {"role": "system", "content": "You are a mental health assistant. Provide supportive and empathetic responses."},
+#                 {"role": "user", "content": user_input}
+#             ]
+#         )
+#         return response.choices[0].message.content
+#     except Exception as e:
+#         return f"AI Error: {str(e)}"
+
 def get_openai_response(user_input):
-    print(user_input)
+    # Normalize user input
+    user_input_cleaned = user_input.strip().lower()
+
+    # Predefined identity-related questions
+    identity_questions = [
+        "what is your name",
+        "what is your name ?",
+        "who are you",
+        "who is you",
+        "tell me about yourself",
+        "Tell me something about yourself"
+        "who developed you",
+        "who made you",
+        "introduce yourself",
+        "what can you do",
+        "are you real",
+        "are you a human",
+        "your name",
+        "Your name ?",
+        "Who build you?",
+        "Hello",
+        "hello",
+        "Hello AI",
+        "k xa kbr",
+        "Hey",
+        "Hii"
+        
+    ]
+
+    # Check for matches
+    for question in identity_questions:
+        if question in user_input_cleaned:
+            return "Hi, I’m Mood Net AI, your mental health support assistant. I'm here to help you feel better and provide emotional support."
+
+    # Fallback to OpenAI if not a match
     try:
-        response = openai.ChatCompletion.create(
-            model="gpt-3.5-turbo",  # or "gpt-4"
+        response = client.chat.completions.create(
+            model="google/gemma-3-4b-it:free",
             messages=[
                 {"role": "system", "content": "You are a mental health assistant. Provide supportive and empathetic responses."},
                 {"role": "user", "content": user_input}
             ]
         )
-        return response.choices[0].message['content']
+        return response.choices[0].message.content
     except Exception as e:
         return f"AI Error: {str(e)}"
+
+
+
+#============================================================================
+# def get_openai_response(user_input):
+#     print(user_input)
+#     try:
+#         response = openai.ChatCompletion.create(
+#             model="gpt-3.5-turbo",  # or "gpt-4"
+#             messages=[
+#                 {"role": "system", "content": "You are a mental health assistant. Provide supportive and empathetic responses."},
+#                 {"role": "user", "content": user_input}
+#             ]
+#         )
+#         return response.choices[0].message['content']
+#     except Exception as e:
+#         return f"AI Error: {str(e)}"
 
 
 

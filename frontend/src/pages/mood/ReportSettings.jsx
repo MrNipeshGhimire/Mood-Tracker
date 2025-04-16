@@ -40,7 +40,7 @@ const ReportSettings = () => {
     <>
       <Navbar />
       <div className="flex flex-col items-center py-8 bg-gray-100 min-h-screen">
-        <h1 className="text-3xl font-semibold mb-6 text-center">Set Report Alarm</h1>
+        <h1 className="text-3xl font-semibold mb-6 text-center">Set Report Generation Time</h1>
         <div className="w-full max-w-2xl p-6 bg-white shadow-lg rounded-lg">
           <form onSubmit={handleSubmit} className="space-y-6">
             {/* Section for Alarm Clock UI */}
